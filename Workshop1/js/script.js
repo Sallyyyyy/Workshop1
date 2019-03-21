@@ -1,4 +1,3 @@
-
 var bookDataFromLocalStorage = [];
 var bookCategoryList = [
     { text: "資料庫", value: "database", src: "image/database.jpg" },
@@ -21,7 +20,9 @@ $(function () {
 });
 $(document).ready(function () {
     $("#book_grid").kendoGrid({
-        dataSource: bookData,
+        dataSource: new kendo.data.DataSource({
+            data: bookData
+        }),
         height: 550,
         groupable: true,
         sortable: true,
@@ -30,23 +31,42 @@ $(document).ready(function () {
             pageSizes: true,
             buttonCount: 5
         },
-        columns: [{
-            template: "<div class='customer-photo'" +
-                "style='background-image: url(../content/web/Customers/#:data.CustomerID#.jpg);'></div>" +
-                "<div class='customer-name'>#: ContactName #</div>",
-            field: "ContactName",
-            title: "Contact Name",
-            width: 240
-        }, {
-                field: "BookId",
-                title: "書籍編號"
-        }, {
-                field: "BookName",
-                title: "書籍名稱"
-        }, {
-                field: "BookCategory",
-                title: "書籍種類",
-            width: 150
-        }]
+        columns: [
+            { command: "destroy" },
+                {
+                    field: "BookId",
+                    title: "書籍編號"
+            }, {
+                    field: "BookName",
+                    title: "書籍名稱"
+            }, {
+                    field: "BookCategory",
+                    title: "書籍種類",
+            }, {
+                    field: "BookAuthor",
+                    title: "作者"
+            },{
+                    field: "BookBoughtDate",
+                    title: "購買日期"
+            }, {
+                    field: "BookDeliveredDate",
+                    title: "送達狀態",
+            }, {
+                    field: "BookPrice",
+                    title: "金額"
+            }, {
+                    field: "BookAmount",
+                    title: "數量"
+            }, {
+                    field: "BookTotal",
+                    title: "總計"
+                }],
+        remove: function (e) {
+                console.log("Removing", e.model.name);
+        },
+        schema: {
+              model: { id: "id" }
+            },
+        editable: true,
     });
 });
