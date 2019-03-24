@@ -75,8 +75,8 @@ $(document).ready(function () {
         height: 550,
         toolbar: ["create"],
         pageable: true,
-        groupable: true,
-        sortable: true,
+        //groupable: true,
+        //sortable: true,
         pageable: {
             refresh: true,
             pageSizes: true,
@@ -132,5 +132,21 @@ $(document).ready(function () {
                 }],
         
         editable: "popup"
+    });
+    
+    var $search = $("#search");
+    
+    $search.kendoAutoComplete({
+        dataTextField: "textForSearch",
+        dataSource: dataSource,
+        filter: "contains",
+        select: function (e) {
+            //get index of <LI>
+            var idx = $.inArray(e.item[0], e.sender.items());
+            var data = e.sender.dataItem(idx);
+            //set name
+            $("#name").text(data.name);
+        }
+        
     });
 });
