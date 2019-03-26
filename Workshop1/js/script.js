@@ -70,7 +70,8 @@ $(document).ready(function () {
             }
         }
     });
-    
+    var wnd,
+        detailsTemplate;
     $("#book_grid").kendoGrid({
         dataSource: dataSource,
         height: 550,
@@ -84,7 +85,7 @@ $(document).ready(function () {
             buttonCount: 5
         },
         columns: [
-            { command: { text: "View Details", click: showDetails }, title: " ", width: "180px" } ,
+            { command: { text: "刪除", click: showDeleteDetail }, title: " ", width: "130px" } ,
                 {
                     field: "BookId",
                     title: "書籍編號",
@@ -134,6 +135,28 @@ $(document).ready(function () {
         
         editable: "popup"
     });
+    $('#save_book').click(function () {
+        wnd.center().open();
+    })
+    wnd = $("#showInsert")
+        .kendoWindow({
+            title: "新增書籍",
+            modal: true,
+            //visible: false,
+            resizable: false,
+            width: 500
+        }).data("kendoWindow");
+
+    detailsTemplate = kendo.template($("#template").html());
+    function showDeleteDetail(e) {
+        console.log("");
+        
+        kendo.confirm("Are you sure that you want to proceed?").then(function () {
+            kendo.alert("You chose the Ok action.");
+        }, function () {
+            kendo.alert("You chose to Cancel action.");
+        });
+    }
     var $search = $("#search");
     $search.kendoAutoComplete({
         dataTextField: "textForSearch",

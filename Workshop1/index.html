@@ -21,15 +21,17 @@
             <h1 class="navbar-title text-center">圖書管理系統</h1>
         </nav>
         <script src="data/book-data.js"></script>
+       
     </header>
     <main>
         <input type="text" id="search" />
+        <button type="button" class="k-button k-primary btn-add-book" id="save_book">新增</button>
         <div id="book_grid">
         </div>
         <div id="DeleteDetail">
         </div>
         <div class="uk-container align-center">
-            <div class="uk-card uk-text-left uk-width-1-3">
+            <div class="uk-card uk-text-left uk-width-1-3" id="showInsert">
                 <form id="book_form">
                     <ul class="fieldlist">
                         <li>
@@ -68,9 +70,7 @@
                                 總計&nbsp;<span id="book_total">0</span> 元
                             </span>
                         </li>
-                        <li class="uk-text-right">
-                            <button type="button" class="k-button k-primary btn-add-book" id="save_book">新增</button>
-                        </li>
+
                     </ul>
                 </form>
             </div>
