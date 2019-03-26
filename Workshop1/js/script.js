@@ -70,6 +70,7 @@ $(document).ready(function () {
             }
         }
     });
+    
     $("#book_grid").kendoGrid({
         dataSource: dataSource,
         height: 550,
@@ -83,7 +84,7 @@ $(document).ready(function () {
             buttonCount: 5
         },
         columns: [
-            { command: "destroy", title: "&nbsp;" },
+            { command: { text: "View Details", click: showDetails }, title: " ", width: "180px" } ,
                 {
                     field: "BookId",
                     title: "書籍編號",
@@ -133,12 +134,10 @@ $(document).ready(function () {
         
         editable: "popup"
     });
-    
     var $search = $("#search");
-    
     $search.kendoAutoComplete({
         dataTextField: "textForSearch",
-        dataSource: dataSource,
+        dataSource: bookData,
         filter: "contains",
         select: function (e) {
             //get index of <LI>
