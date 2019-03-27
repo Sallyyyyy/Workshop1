@@ -75,7 +75,7 @@ $(document).ready(function () {
     $("#book_grid").kendoGrid({
         dataSource: dataSource,
         height: 550,
-        toolbar: ["create"],
+        toolbar: "<input type='search id='search' />",
         pageable: true,
         //groupable: true,
         //sortable: true,
@@ -135,7 +135,7 @@ $(document).ready(function () {
         
         editable: "popup"
     });
-    $('#save_book').click(function () {
+    $('#add_book').click(function () {
         wnd.center().open();
     })
     wnd = $("#showInsert")
@@ -144,14 +144,20 @@ $(document).ready(function () {
             modal: true,
             //visible: false,
             resizable: false,
-            width: 500
+            width: 700
         }).data("kendoWindow");
 
     detailsTemplate = kendo.template($("#template").html());
     function showDeleteDetail(e) {
-        console.log("");
-        
-        kendo.confirm("Are you sure that you want to proceed?").then(function () {
+        // prevent page scroll position change
+        e.preventDefault();
+        // e.target is the DOM element representing the button
+        var tr = $(e.target).closest("tr"); // get the current table row (tr)
+        // get the data bound to the current table row
+        var data = this.dataItem(tr);
+        console.log(data.BookId - 1);
+        kendo.confirm("確定刪除「" + data.BookName + "」嗎?").then(function () {
+            bookData.splice(data.BookId - 1, 1);
             kendo.alert("You chose the Ok action.");
         }, function () {
             kendo.alert("You chose to Cancel action.");
