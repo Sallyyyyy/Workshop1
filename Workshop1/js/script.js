@@ -32,36 +32,8 @@ $(function () {
 });
 $(document).ready(function () {
     var dataSource = new kendo.data.DataSource({
-        transport: {
-            read: function (e) {
-                // on success
-                e.success(bookData);
-
-                // on failure
-                //e.error("XHR response", "status code", "error message");
-            },
-            //the other CRUD settings are omitted for brevity 
-           
-            destroy: function (e) {
-                // remove items from the original datasource by using e.data
-                bookData.splice(getIndexById(e.data.BookId), 1); //splice用來刪除从 index 處開始的零個或多個元素
-                // on success
-                e.success();
-                // on failure
-                //e.error("XHR response", "status code", "error message");
-            },
-            update: function (e) {
-                // locate item in original datasource and update it
-                bookData[getIndexById(e.data.BookId)] = e.data;
-                // on success
-                e.success();
-                // on failure
-                //e.error("XHR response", "status code", "error message");
-            },
-            error: function (e) {
-                // handle data operation error
-                alert("Status: " + e.status + "; Error message: " + e.errorThrown);
-            },
+            data: bookData,
+            pageSize: 20,
             schema: {
                 model: { id: "BookId" },
                 fields: {
@@ -69,9 +41,22 @@ $(document).ready(function () {
                 }
             }
         }
-    });
+    );
     var wnd,
         detailsTemplate;
+    function showDeleteDetail(e) {
+        // prevent page scroll position change
+        e.preventDefault();
+        // e.target is the DOM element representing the button
+        var tr = $(e.target).closest("tr"); // get the current table row (tr)
+        // get the data bound to the current table row
+        var data = this.dataItem(tr);
+        kendo.confirm("確定刪除「" + data.BookName + "」嗎?").then(function () {
+            console.log(data);
+            dataSource.remove(data);
+        }, function () {
+        });
+    }
     $("#book_grid").kendoGrid({
         dataSource: dataSource,
         height: 550,
@@ -85,7 +70,7 @@ $(document).ready(function () {
             buttonCount: 5
         },
         columns: [
-            { command: { text: "刪除", click: showDeleteDetail }, title: " ", width: "130px" } ,
+            { command:{ text: "刪除", click: showDeleteDetail }, title: " ", width: "130px" } ,
                 {
                     field: "BookId",
                     title: "書籍編號",
@@ -133,7 +118,7 @@ $(document).ready(function () {
                     format: '{0:n0} 元'
                 }],
         
-        editable: "popup"
+        editable: "inline"
     });
     $('#add_book').click(function () {
         wnd.center().open();
@@ -147,22 +132,28 @@ $(document).ready(function () {
             width: 700
         }).data("kendoWindow");
 
-    detailsTemplate = kendo.template($("#template").html());
-    function showDeleteDetail(e) {
-        // prevent page scroll position change
-        e.preventDefault();
-        // e.target is the DOM element representing the button
-        var tr = $(e.target).closest("tr"); // get the current table row (tr)
-        // get the data bound to the current table row
-        var data = this.dataItem(tr);
-        console.log(data.BookId - 1);
-        kendo.confirm("確定刪除「" + data.BookName + "」嗎?").then(function () {
-            bookData.splice(data.BookId - 1, 1);
-            kendo.alert("You chose the Ok action.");
-        }, function () {
-            kendo.alert("You chose to Cancel action.");
-        });
+    var template = kendo.template($("#book-template").html());
+
+    function preview() {
+        var dropdown = $("#book_category").data("kendoDropDownList");
+        console.log("value" + dropdown.dataSource);
+        console.log("dropdown" + bookCategoryList.indexOf());
+        var product = dropdown.dataSource.indexOf(dropdown.value());
+
+        var productPreviewHtml = template(product);
+        console.log("product"+product);
+        console.log("productPreviewHtml"+productPreviewHtml);
+        $("#book-preview").html(productPreviewHtml);
     }
+
+    $("#book_category").kendoDropDownList({
+        dataTextField: "text",
+        dataValueField: "value",
+        dataSource: bookCategoryList,
+        dataBound: preview,
+        change: preview
+    });
+    
     var $search = $("#search");
     $search.kendoAutoComplete({
         dataTextField: "textForSearch",

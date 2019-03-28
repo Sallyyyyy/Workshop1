@@ -21,7 +21,7 @@
             <h1 class="navbar-title text-center">圖書管理系統</h1>
         </nav>
         <script src="data/book-data.js"></script>
-       
+
     </header>
     <main>
 
@@ -32,6 +32,8 @@
                 <form id="book_form">
                     <ul class="fieldlist">
                         <li>
+
+                            <div id="book-preview" class="demo-section k-content"></div>
                             <img class="book-image" src="image/database.jpg" alt="">
                         </li>
                         <li>
@@ -78,11 +80,16 @@
         </div>
     </main>
     <footer></footer>
+    <script id="book-template" type="text/x-kendo-template">
+        <h4>ProductName: #: value #</h4>
+        <img src="image/home.jpg">
+    </script>
     <script type="text/javascript" src="data/book-data.js"></script>
     <script src="./js/jquery-2.1.4.min.js"></script>
     <script src="./js/kendo.all.min.js"></script>
     <script src="./js/uikit.min.js"></script>
     <script src="./js/script.js"></script>
+    <script src="./js/kendo.messages.zh-TW.min.js"></script>
 </body>
 
 </html>
