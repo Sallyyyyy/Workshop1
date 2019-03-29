@@ -34,7 +34,6 @@
                         <li>
 
                             <div id="book-preview" class="demo-section k-content"></div>
-                            <img class="book-image" src="image/database.jpg" alt="">
                         </li>
                         <li>
                             <label class="required">圖書類別</label>
@@ -80,9 +79,15 @@
         </div>
     </main>
     <footer></footer>
-    <script id="book-template" type="text/x-kendo-template">
-        <h4>ProductName: #: value #</h4>
-        <img src="image/home.jpg">
+    <script id="BookDeliveredDate-template" type="text/x-kendo-template">
+        #if(BookId != null){#
+        <span class="k-icon k-i-gear colored-icon"></span>
+        #}else{#
+        2123
+        #}#
+        <span class="k-icon k-i-gear colored-icon"></span>
+
+
     </script>
     <script type="text/javascript" src="data/book-data.js"></script>
     <script src="./js/jquery-2.1.4.min.js"></script>

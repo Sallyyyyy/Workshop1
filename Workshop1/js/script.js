@@ -57,6 +57,7 @@ $(document).ready(function () {
         }, function () {
         });
     }
+    //Grid
     $("#book_grid").kendoGrid({
         dataSource: dataSource,
         height: 550,
@@ -91,7 +92,9 @@ $(document).ready(function () {
                     format: "{0: yyyy-MM-dd}"
             }, {
                     field: "BookDeliveredDate",
-                    title: "送達狀態"
+                    title: "送達狀態",
+                    template: kendo.template($("#BookDeliveredDate-template").html())
+
             }, {
                     field: "BookPrice",
                     title: "金額",
@@ -120,6 +123,7 @@ $(document).ready(function () {
         
         editable: "inline"
     });
+    //新增書籍按鈕
     $('#add_book').click(function () {
         wnd.center().open();
     })
@@ -132,28 +136,26 @@ $(document).ready(function () {
             width: 700
         }).data("kendoWindow");
 
-    var template = kendo.template($("#book-template").html());
-
+    //書籍種類下拉式選單(變更圖片)
     function preview() {
         var dropdown = $("#book_category").data("kendoDropDownList");
+        console.log("bookCategoryList " + bookCategoryList.indexOf("database"));
         console.log("value" + dropdown.dataSource);
-        console.log("dropdown" + bookCategoryList.indexOf());
-        var product = dropdown.dataSource.indexOf(dropdown.value());
-
-        var productPreviewHtml = template(product);
-        console.log("product"+product);
-        console.log("productPreviewHtml"+productPreviewHtml);
-        $("#book-preview").html(productPreviewHtml);
+        var product = dropdown.dataSource.get(dropdown.value());
+        console.log(dropdown.value());
+        var bookimg = "<img src='image/" + dropdown.value() + ".jpg'>";
+        console.log("img="+bookimg);
+        $("#book-preview").html(bookimg);
     }
-
-    $("#book_category").kendoDropDownList({
+    $("#book_category").kendoDropDownList({ 
         dataTextField: "text",
         dataValueField: "value",
         dataSource: bookCategoryList,
         dataBound: preview,
         change: preview
     });
-    
+
+    //搜尋引擎
     var $search = $("#search");
     $search.kendoAutoComplete({
         dataTextField: "textForSearch",

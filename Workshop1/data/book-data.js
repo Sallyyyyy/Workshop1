@@ -5,7 +5,7 @@ var bookData = [
       "BookName":"DB2:Maximizing Performance of Online Production Systems",
       "BookAuthor":"W.H.Inmon",
       "BookBoughtDate":"1990-06-18",
-      "BookPublisher":"創創公司",
+      "BookPublisher": "創創公司",
       "BookPrice":915,
       "BookAmount":7,
       "BookTotal":6405
