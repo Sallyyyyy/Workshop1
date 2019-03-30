@@ -35,9 +35,11 @@ $(document).ready(function () {
             data: bookData,
             pageSize: 20,
             schema: {
-                model: { id: "BookId" },
+                model: { id: "BookId",
                 fields: {
                     BookId: { editable: false, nullable: true },
+                    BookDeliveredDate: { nullable: true}
+                    }
                 }
             }
         }
@@ -61,7 +63,7 @@ $(document).ready(function () {
     $("#book_grid").kendoGrid({
         dataSource: dataSource,
         height: 550,
-        toolbar: "<input type='search id='search' />",
+        toolbar: "<input type='search id='search' class='k-i-search'/>",
         pageable: true,
         //groupable: true,
         //sortable: true,
@@ -93,7 +95,8 @@ $(document).ready(function () {
             }, {
                     field: "BookDeliveredDate",
                     title: "送達狀態",
-                    template: kendo.template($("#BookDeliveredDate-template").html())
+                    template:kendo.template($("#BookDeliveredDate-template").html())
+                        
 
             }, {
                     field: "BookPrice",
@@ -129,11 +132,13 @@ $(document).ready(function () {
     })
     wnd = $("#showInsert")
         .kendoWindow({
+            actions: ["Pin", "Maximize", "Minimize", "Close"],
             title: "新增書籍",
             modal: true,
             //visible: false,
             resizable: false,
-            width: 700
+            width: 700,
+            height: 700
         }).data("kendoWindow");
 
     //書籍種類下拉式選單(變更圖片)
@@ -143,7 +148,7 @@ $(document).ready(function () {
         console.log("value" + dropdown.dataSource);
         var product = dropdown.dataSource.get(dropdown.value());
         console.log(dropdown.value());
-        var bookimg = "<img src='image/" + dropdown.value() + ".jpg'>";
+        var bookimg = "<img src='image/" + dropdown.value() + ".jpg' style='width: 100%; height: 100%;'>";
         console.log("img="+bookimg);
         $("#book-preview").html(bookimg);
     }
@@ -154,7 +159,27 @@ $(document).ready(function () {
         dataBound: preview,
         change: preview
     });
-
+    //表單資料設定  &  表單驗證
+    $("#delivered_datepicker").kendoDatePicker({
+        rules: {
+            date: function (input) {
+                var d = kendo.parseDate(input.val(), "yyyy-MM-dd");
+                return d instanceof Date;
+            }
+        }
+    });
+    $("#bought_datepicker").kendoDatePicker({
+        parseFormats: ["yyyy/MM/dd", "yyyy-MM-dd","yyyyMMdd"]
+    });
+    var validator = $("#book_form").kendoValidator().data("kendoValidator");
+    $("#insert").on("click", function () {
+        if (validator.validate()) {
+            // If the form is valid, the Validator will return true
+            alert("123");
+        } else {
+            alert("456");
+        }
+    });
     //搜尋引擎
     var $search = $("#search");
     $search.kendoAutoComplete({
