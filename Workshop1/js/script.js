@@ -1,14 +1,5 @@
-console.log(bookData);
-console.log(bookData[2].BookCategory);
-var bookDataCopy = bookData.slice();
-var i;
-for (i = 0; i < bookDataCopy.length; i++) {
-    if (bookData[i].BookCategory == "database") {
-        bookData[i].BookCategory = "資料庫";
-        console.log(i);
-        console.log(bookData[i].BookCategory);
-    }
-}
+
+
 
 var bookDataFromLocalStorage = [];
 var bookCategoryList = [
@@ -24,7 +15,17 @@ function loadBookData() {
     bookDataFromLocalStorage = JSON.parse(localStorage.getItem('bookData'));
     if (bookDataFromLocalStorage == null) {
         bookDataFromLocalStorage = bookData;
+        var i;
+        for (i = 0; i < bookDataFromLocalStorage.length; i++) {
+            if (bookDataFromLocalStorage[i].BookCategory == "database") {
+                bookDataFromLocalStorage[i].BookCategory = "資料庫";
+                console.log(i);
+                console.log(bookDataFromLocalStorage[i].BookCategory);
+            }
+        }
         localStorage.setItem('bookData', JSON.stringify(bookDataFromLocalStorage));
+        
+        
     }
 }
 $(function () {
@@ -32,12 +33,30 @@ $(function () {
 });
 $(document).ready(function () {
     var dataSource = new kendo.data.DataSource({
-            data: bookData,
+            data: bookDataFromLocalStorage,
             pageSize: 20,
             schema: {
                 model: { id: "BookId",
                 fields: {
                     BookId: { editable: false, nullable: true },
+                    BookCategory: {
+                        type: "text",
+                        validation: { // validation rules
+                            required: true
+                        }
+                    },
+                    BookName: {
+                        type: "text",
+                        validation: {
+                            required: true
+                        }
+                    },
+                    BookAuthor: { type: "text"},
+                    BookBoughtDate: { type: "date" },
+                    BookPublisher: { type: "text" },
+                    BookPrice: { type: "number" },
+                    BookAmount: { type: "number"},
+                    BookTotal: { type: "number"},
                     BookDeliveredDate: { nullable: true}
                     }
                 }
@@ -144,12 +163,8 @@ $(document).ready(function () {
     //書籍種類下拉式選單(變更圖片)
     function preview() {
         var dropdown = $("#book_category").data("kendoDropDownList");
-        console.log("bookCategoryList " + bookCategoryList.indexOf("database"));
-        console.log("value" + dropdown.dataSource);
         var product = dropdown.dataSource.get(dropdown.value());
-        console.log(dropdown.value());
         var bookimg = "<img src='image/" + dropdown.value() + ".jpg' style='width: 100%; height: 100%;'>";
-        console.log("img="+bookimg);
         $("#book-preview").html(bookimg);
     }
     $("#book_category").kendoDropDownList({ 
@@ -160,18 +175,76 @@ $(document).ready(function () {
         change: preview
     });
     //表單資料設定  &  表單驗證
+    //設定日期欄位
+    var today = new Date();
+    var date;
+    date = (today.getFullYear()) + "-" + (today.getMonth() + 1) + "-" + today.getDate();
     $("#delivered_datepicker").kendoDatePicker({
-        rules: {
-            date: function (input) {
-                var d = kendo.parseDate(input.val(), "yyyy-MM-dd");
-                return d instanceof Date;
-            }
-        }
+        culture: "zh-TW",
+        format: "yyyy-MM-dd"
     });
     $("#bought_datepicker").kendoDatePicker({
-        parseFormats: ["yyyy/MM/dd", "yyyy-MM-dd","yyyyMMdd"]
-    });
-    var validator = $("#book_form").kendoValidator().data("kendoValidator");
+        culture: "zh-TW",
+        format: "yyyy-MM-dd"
+    }).data("kendoDatePicker").value(date);
+
+    //設定金額數量欄位
+    
+
+    
+    $("#book_price,#book_amount").on('keyup', function () {
+        var price = $("#book_price").val();
+        var amount = $("#book_amount").val();
+        var total = price * amount;
+        $("#book_total").text(total);
+        
+            
+    })
+    
+    var validator = $("#book_form").kendoValidator({
+        messages: {
+            custom: "Please enter valid value for my custom rule"
+        },
+        rules: {
+            custom: function (input) {
+                if (input.is("[id=book_price]")) {
+                    if (checkInt(input.val()) === true) {
+                        return input.val() > 0;
+                    } else {
+                        return false;
+                    }
+                } else if (input.is("[id=book_amount]")) {
+                    if (checkInt(input.val()) === true) {
+                        return input.val() > 0;
+                    } else {
+                        return false;
+                    }
+                } else if (input.is("[id=delivered_datepicker]")) {
+                    var deliveredDate = $("#delivered_datepicker").val();
+                    var boughtDate = $("#bought_datepicker").val();
+                    if ((Date.parse(deliveredDate)).valueOf() > (Date.parse(boughtDate)).valueOf()) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }
+                return true;
+            }
+        }
+    }).data("kendoValidator");
+    function checkInt(n) {
+        console.log("enter checkint");
+        var regex = /^\d+$/;
+        if (regex.test(n)) {
+            if (n > 0) {
+                console.log("整數");
+                return true;
+            }
+        } else {
+            console.log("非整數");
+            return false;
+        }
+    }
     $("#insert").on("click", function () {
         if (validator.validate()) {
             // If the form is valid, the Validator will return true
