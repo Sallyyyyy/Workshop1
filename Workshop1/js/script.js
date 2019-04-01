@@ -34,6 +34,17 @@ $(function () {
 $(document).ready(function () {
     var dataSource = new kendo.data.DataSource({
             data: bookDataFromLocalStorage,
+            filterable: true,
+            filter: function (e) {
+                if (e.filter == null) {
+                    console.log("filter has been cleared");
+                } else {
+                    console.log(e.filter.logic);
+                    console.log(e.filter.filters[0].field);
+                    console.log(e.filter.filters[0].operator);
+                    console.log(e.filter.filters[0].value);
+                }
+            },
             pageSize: 20,
             schema: {
                 model: { id: "BookId",
@@ -41,17 +52,17 @@ $(document).ready(function () {
                     BookId: { editable: false, nullable: true },
                     BookCategory: {
                         type: "text",
-                        validation: { // validation rules
-                            required: true
-                        }
-                    },
-                    BookName: {
-                        type: "text",
                         validation: {
                             required: true
                         }
                     },
-                    BookAuthor: { type: "text"},
+                    BookName: {
+                        type: "string",
+                        validation: {
+                            required: true
+                        }
+                    },
+                    BookAuthor: { type: "string"},
                     BookBoughtDate: { type: "date" },
                     BookPublisher: { type: "text" },
                     BookPrice: { type: "number" },
@@ -63,26 +74,12 @@ $(document).ready(function () {
             }
         }
     );
-    var wnd,
-        detailsTemplate;
-    function showDeleteDetail(e) {
-        // prevent page scroll position change
-        e.preventDefault();
-        // e.target is the DOM element representing the button
-        var tr = $(e.target).closest("tr"); // get the current table row (tr)
-        // get the data bound to the current table row
-        var data = this.dataItem(tr);
-        kendo.confirm("確定刪除「" + data.BookName + "」嗎?").then(function () {
-            console.log(data);
-            dataSource.remove(data);
-        }, function () {
-        });
-    }
+    
     //Grid
     $("#book_grid").kendoGrid({
         dataSource: dataSource,
         height: 550,
-        toolbar: "<input type='search id='search' class='k-i-search'/>",
+        toolbar: "<input type='search' id='search' class='k-i-search'/>",
         pageable: true,
         //groupable: true,
         //sortable: true,
@@ -115,8 +112,6 @@ $(document).ready(function () {
                     field: "BookDeliveredDate",
                     title: "送達狀態",
                     template:kendo.template($("#BookDeliveredDate-template").html())
-                        
-
             }, {
                     field: "BookPrice",
                     title: "金額",
@@ -145,7 +140,45 @@ $(document).ready(function () {
         
         editable: "inline"
     });
+    //搜尋引擎
+    $("#search").on('input', function (e) {
+        var grid = $('#book_grid').data('kendoGrid');
+        var columns = grid.columns;
+        var filter = { logic: 'or', filters: [] };
+        columns.forEach(function (x) {
+            if (x.field) {
+                var type = grid.dataSource.options.schema.model.fields[x.field].type;
+                if (type == 'string') {
+                    filter.filters.push({
+                        field: x.field,
+                        operator: 'contains',
+                        value: e.target.value
+                    })
+                }
+            }
+        });
+        grid.dataSource.filter(filter);
+    });
+
+
+    //確認刪除窗格
+    function showDeleteDetail(e) {
+        // prevent page scroll position change
+        e.preventDefault();
+        // e.target is the DOM element representing the button
+        var tr = $(e.target).closest("tr"); // get the current table row (tr)
+        // get the data bound to the current table row
+        var data = this.dataItem(tr);
+        kendo.confirm("確定刪除「" + data.BookName + "」嗎?").then(function () {
+            console.log(data);
+            dataSource.remove(data);
+        }, function () {
+        });
+    }
+
     //新增書籍按鈕
+    var wnd,
+        detailsTemplate;
     $('#add_book').click(function () {
         wnd.center().open();
     })
@@ -189,18 +222,43 @@ $(document).ready(function () {
     }).data("kendoDatePicker").value(date);
 
     //設定金額數量欄位
-    
+    $("#book_price,#book_amount").kendoNumericTextBox({
+        value: 0,
+        format: "{0:n0}"
+    });
 
-    
     $("#book_price,#book_amount").on('keyup', function () {
         var price = $("#book_price").val();
         var amount = $("#book_amount").val();
         var total = price * amount;
+       
         $("#book_total").text(total);
-        
+         setTotal(total);
             
     })
-    
+    /*
+    function setTotal(s) {
+        var total = "";
+        s = s + '';
+        var x = [];
+        x = s.split("");
+
+        for (var i = x.length; i >= 0; i--) {
+            console.log(i);
+            if (i % 3 == 0) {
+                console.log("in");
+                total = total + x[i] + ","; 
+            
+                
+            } else {
+                total = total + x[i]; 
+              
+            }   
+        }
+        //$("#book_total").text(x);
+    }*/
+
+    //驗證新增表單
     var validator = $("#book_form").kendoValidator({
         messages: {
             custom: "Please enter valid value for my custom rule"
@@ -245,27 +303,7 @@ $(document).ready(function () {
             return false;
         }
     }
-    $("#insert").on("click", function () {
-        if (validator.validate()) {
-            // If the form is valid, the Validator will return true
-            alert("123");
-        } else {
-            alert("456");
-        }
-    });
-    //搜尋引擎
-    var $search = $("#search");
-    $search.kendoAutoComplete({
-        dataTextField: "textForSearch",
-        dataSource: bookData,
-        filter: "contains",
-        select: function (e) {
-            //get index of <LI>
-            var idx = $.inArray(e.item[0], e.sender.items());
-            var data = e.sender.dataItem(idx);
-            //set name
-            $("#name").text(data.name);
-        }
-        
-    });
+    
+    
+
 });

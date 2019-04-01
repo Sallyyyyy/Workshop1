@@ -23,7 +23,7 @@
 
     </header>
     <main>
-
+        
         <div id="DeleteDetail">
         </div>
         <div class="uk-container align-center">
@@ -61,17 +61,17 @@
                         </li>
                         <li>
                             <label class="required">金額</label>
-                            <input id="book_price" type="number" class="k-textbox" style="width:100%" required value="0" />
+                            <input id="book_price" type="number" class="k-textbox" style="width:100%;text-align:right;" required value="0" />
                             <span class="k-invalid-msg" data-for="book_price"></span>
                         </li>
                         <li>
                             <label class="required">數量</label>
-                            <input id="book_amount" type="number" class="k-textbox" style="width:100%" required value="0" />
+                            <input id="book_amount" type="number" class="k-textbox" style="width:100%;text-align:right;" required value="0"/>
                             <span class="k-invalid-msg" data-for="book_amount"></span>
                         </li>
                         <li style="text-align:right;">
                             <span>
-                                總計&nbsp;<span id="book_total">0</span> 元
+                                總計&nbsp;<span data-format="{0:n0}"   id="book_total">0</span> 元
                             </span>
                         </li>
 
@@ -96,12 +96,7 @@
     </script>
     <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-    <script>
-        $(function () {
-            $(document).tooltip();
-        });
-
-    </script>
+    
     <script type="text/javascript" src="data/book-data.js"></script>
     <script src="./js/jquery-2.1.4.min.js"></script>
     <script src="./js/kendo.all.min.js"></script>
