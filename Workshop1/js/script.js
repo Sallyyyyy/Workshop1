@@ -10,38 +10,26 @@ var bookCategoryList = [
 
 // 載入書籍資料
 function loadBookData() {
-    if (bookDataFromLocalStorage === null) {
-        console.log("LocalStorage=null")
+    bookDataFromLocalStorage = JSON.parse(localStorage.getItem('bookData'));
+    if (bookDataFromLocalStorage == null) {
+        bookDataFromLocalStorage = bookData;
         localStorage.setItem('bookData', JSON.stringify(bookDataFromLocalStorage));
-        var i;
-        var j;
-        for (i = 0; i < bookDataFromLocalStorage.length; i++) {
-            for (j = 0; j < bookCategoryList.length; j++) {
-                if (bookDataFromLocalStorage[i].BookCategory == bookCategoryList[j].value) {
-                    bookDataFromLocalStorage[i].BookCategory = bookCategoryList[j].text;
-                }
-            }
-
-        }
-    } else {
-        bookDataFromLocalStorage = JSON.parse(localStorage.getItem('bookData'));
-        console.log(bookDataFromLocalStorage[0].BookCategory);
-        var i;
-        var j;
-        for (i = 0; i < bookDataFromLocalStorage.length; i++) {
-            for (j = 0; j < bookCategoryList.length; j++) {
-                if (bookDataFromLocalStorage[i].BookCategory == bookCategoryList[j].value) {
-                    bookDataFromLocalStorage[i].BookCategory = bookCategoryList[j].text;
-                }
-            }
-        }
-        console.log(bookDataFromLocalStorage[0].BookCategory);
     }
+    
 }
 $(function () {
     loadBookData();
 });
 $(document).ready(function () {
+    var i;
+    var j;
+    for (i = 0; i < bookDataFromLocalStorage.length; i++) {
+        for (j = 0; j < bookCategoryList.length; j++) {
+            if (bookDataFromLocalStorage[i].BookCategory == bookCategoryList[j].value) {
+                bookDataFromLocalStorage[i].BookCategory = bookCategoryList[j].text;
+            }
+        }
+    }
     //set datasource
     var dataSource = new kendo.data.DataSource({
         data: bookDataFromLocalStorage,
@@ -108,9 +96,13 @@ $(document).ready(function () {
         var tr = $(e.target).closest("tr"); // get the current table row (tr)
         // get the data bound to the current table row
         var data = this.dataItem(tr);
+        var grid = $("#book_grid").data("kendoGrid")
         kendo.confirm("確定刪除「" + data.BookName + "」嗎?").then(function () {
             console.log(data);
             dataSource.remove(data);
+            var bookData = grid.dataSource._data
+            localStorage.clear();
+            localStorage.setItem('bookData', JSON.stringify(bookData));
         }, function () {
         });
     }
@@ -154,12 +146,14 @@ $(document).ready(function () {
     $("#delivered_datepicker").kendoDatePicker({
         culture: "zh-TW",
         format: "yyyy-MM-dd",
-        parseFormats: ["yyyy/MM/dd", "yyyyMMdd"]
+        parseFormats: ["yyyy/MM/dd", "yyyyMMdd"],
+        dateInput: true
     });
     $("#bought_datepicker").kendoDatePicker({
         culture: "zh-TW",
         format: "yyyy-MM-dd",
-        parseFormats: ["yyyy/MM/dd", "yyyyMMdd"]
+        parseFormats: ["yyyy/MM/dd", "yyyyMMdd"],
+        dateInput: true
     });
 
     //設定金額數量欄位
@@ -177,27 +171,6 @@ $(document).ready(function () {
          //setTotal(total);
             
     })
-    /*
-    function setTotal(s) {
-        var total = "";
-        s = s + '';
-        var x = [];
-        x = s.split("");
-
-        for (var i = x.length; i >= 0; i--) {
-            console.log(i);
-            if (i % 3 == 0) {
-                console.log("in");
-                total = total + x[i] + ","; 
-            
-                
-            } else {
-                total = total + x[i]; 
-              
-            }   
-        }
-        //$("#book_total").text(x);
-    }*/
 
     //驗證新增表單
     var validator = $("#book_form").kendoValidator({
