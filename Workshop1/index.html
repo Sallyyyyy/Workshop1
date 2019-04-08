@@ -37,49 +37,49 @@
                         </li>
                         <li>
                             <label class="required">圖書類別</label>
-                            <select id="book_category" style="width:100%" required></select>
+                            <select id="book_category" data-bind="value: BookCategory" style="width:100%" required></select>
                             <span class="k-invalid-msg" data-for="book_category"></span>
                         </li>
                         <li>
                             <label class="required">書名</label>
-                            <input id="book_name" type="text" class="k-textbox" style="width:100%" required />
+                            <input id="book_name" name="book_name" data-bind="value: bookName" type="text" class="k-textbox" style="width:100%" required />
                             <span class="k-invalid-msg" data-for="book_name"></span>
                         </li>
                         <li>
                             <label class="required">作者</label>
-                            <input id="book_author" type="text" class="k-textbox" style="width:100%" required />
+                            <input id="book_author" name="book_author" data-bind="value: BookAuthor" type="text" class="k-textbox" style="width:100%" required />
                             <span class="k-invalid-msg" data-for="book_author"></span>
                         </li>
                         <li>
                             <label class="required">購買日期</label>
-                            <input type="date" id="bought_datepicker" style="width:100%" required pattern="[0-9]{4}-(0[1-9]|1[012])-(0[1-9]|1[0-9]|2[0-9]|3[01])" />
+                            <input id="bought_datepicker" name="bought_datepicker" data-bind="value: BookBoughtDate" style="width:100%" required />
                             <span class="k-invalid-msg" data-for="bought_datepicker">123</span>
                         </li>
                         <li>
                             <label>送達日期</label>
-                            <input type="date" id="delivered_datepicker" style="width:100%" />
+                            <input id="delivered_datepicker" name="delivered_datepicker" data-bind="value: BookDeliveredDate" style="width:100%" />
                         </li>
                         <li>
                             <label class="required">金額</label>
-                            <input id="book_price" type="number" class="k-textbox" style="width:100%;text-align:right;" required value="0" />
+                            <input id="book_price" name="book_price" data-bind="value: BookPrice" class="k-textbox" style="width:100%;text-align:right;" required />
                             <span class="k-invalid-msg" data-for="book_price"></span>
                         </li>
                         <li>
                             <label class="required">數量</label>
-                            <input id="book_amount" type="number" class="k-textbox" style="width:100%;text-align:right;" required value="0"/>
+                            <input id="book_amount" name="book_amount" data-bind="value: BookAmount" class="k-textbox" style="width:100%;text-align:right;" required />
                             <span class="k-invalid-msg" data-for="book_amount"></span>
                         </li>
                         <li style="text-align:right;">
                             <span>
-                                總計&nbsp;<span data-format="{0:n0}"   id="book_total">0</span> 元
+                                總計&nbsp;<span data-format="{0:n0}"  name="book_total" id="book_total">0</span> 元
                             </span>
                         </li>
 
                     </ul>
                 </form>
-                <div style="text-align:right;"><button type="button" class="k-button k-primary btn-add-book" id="insert">新增</button></div>
+                <div style="text-align:right;"><button type="button" data-bind="click: display" class="k-button k-primary btn-add-book" id="insert">新增</button></div>
             </div>
-            <button type="button" id="add_book" class="k-button k-primary btn-add-book">新增書籍</button>
+            <button type="button" id="add_book" class="k-button k-primary btn-add-book" >新增書籍</button>
             <div id="book_grid">
             </div>
         </div>
