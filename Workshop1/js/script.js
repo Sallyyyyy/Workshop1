@@ -252,7 +252,12 @@ $(document).ready(function () {
                             BookTotal: bookTotal
                         });
                     var index = dataSource.indexOf(dataItem);
+                    
                 });
+                var grid = $("#book_grid").data("kendoGrid")
+                var bookData = grid.dataSource._data
+                localStorage.clear();
+                localStorage.setItem('bookData', JSON.stringify(bookData));
             } else {
                 alert("input error")
             }
