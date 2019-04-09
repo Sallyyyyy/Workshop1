@@ -80,7 +80,6 @@ $(document).ready(function () {
         var data = this.dataItem(tr);
         var grid = $("#book_grid").data("kendoGrid")
         kendo.confirm("確定刪除「" + data.BookName + "」嗎?").then(function () {
-            console.log(data);
             dataSource.remove(data);
             var bookData = grid.dataSource._data
             localStorage.clear();
@@ -248,6 +247,22 @@ $(document).ready(function () {
         }
     });
     kendo.bind($("#showInsert"), viewModel);
+    $(function () {
+            var tooltip = $("#book_grid").kendoTooltip({
+                filter: "span",
+                width: 120,
+                position: "top",
+                animation: {
+                    open: {
+                        effects: "zoom",
+                        duration: 150
+                    }
+                }
+        }).data("kendoTooltip");
+        tooltip.show($("#truck"));
+    });
+    
+    
     //Grid
     $("#book_grid").kendoGrid({
         dataSource: dataSource,

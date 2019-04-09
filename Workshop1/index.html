@@ -94,15 +94,15 @@
     <footer></footer>
     <script id="BookDeliveredDate-template" type="text/x-kendo-template">
         #if(BookDeliveredDate != null){#
-        
-        <span id="truck" title='#:BookDeliveredDate#' class="fas fa-truck"></span>
+        <div id="car">
+            <span id="truck" title="#= BookDeliveredDate ? kendo.toString(new Date(BookDeliveredDate), 'yyyy-MM-dd') : ''#" class="fas fa-truck"></span>
+        </div>
+            #}else{#
 
-        #}else{#
-
-        #}#
+            #}#
 
 
-    </script>
+</script>
 
     <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
