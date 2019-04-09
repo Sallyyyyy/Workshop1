@@ -11,6 +11,7 @@ var bookCategoryList = [
 // 載入書籍資料
 function loadBookData() {
     bookDataFromLocalStorage = JSON.parse(localStorage.getItem('bookData'));
+    console.log(JSON.parse(localStorage.getItem('bookData')))
     if (bookDataFromLocalStorage == null) {
         bookDataFromLocalStorage = bookData;
         localStorage.setItem('bookData', JSON.stringify(bookDataFromLocalStorage));
@@ -21,6 +22,7 @@ $(function () {
     loadBookData();
 });
 $(document).ready(function () {
+  
     var i;
     var j;
     for (i = 0; i < bookDataFromLocalStorage.length; i++) {
@@ -53,7 +55,7 @@ $(document).ready(function () {
                         }
                     },
                     BookAuthor: { type: "string" },
-                    BookBoughtDate: { type: "date" },
+                    BookBoughtDate: { type: "date"},
                     BookPublisher: { type: "text" },
                     BookPrice: { type: "number" },
                     BookAmount: { type: "number" },
@@ -65,28 +67,8 @@ $(document).ready(function () {
             }
         }
     });
-
-    //localstorage
     
-    //搜尋引擎
-    $("#search").on('input', function (e) {
-        var grid = $('#book_grid').data('kendoGrid');
-        var columns = grid.columns;
-        var filter = { logic: 'or', filters: [] };
-        columns.forEach(function (x) {
-            if (x.field) {
-                var type = grid.dataSource.options.schema.model.fields[x.field].type;
-                if (type == 'string') {
-                    filter.filters.push({
-                        field: x.field,
-                        operator: 'contains',
-                        value: e.target.value
-                    })
-                }
-            }
-        });
-        grid.dataSource.filter(filter);
-    });
+    
 
     //確認刪除窗格
     function showDeleteDetail(e) {
@@ -106,6 +88,8 @@ $(document).ready(function () {
         }, function () {
         });
     }
+
+    
 
     //新增書籍按鈕
     var wnd,
@@ -166,8 +150,7 @@ $(document).ready(function () {
         var price = $("#book_price").val();
         var amount = $("#book_amount").val();
         var total = price * amount;
-       
-        $("#book_total").text(total);
+        $("#book_total").html(total.toLocaleString());
          //setTotal(total);
             
     })
@@ -176,8 +159,8 @@ $(document).ready(function () {
     var validator = $("#book_form").kendoValidator({
         messages: {
             required: "此欄位為必填",
-            custom1: "請輸入大於0的數字",
-            custom2: "運送日不可在購買日之前"
+            custom1:  "請輸入大於0的數字",
+            custom2:  "運送日不可在購買日之前"
         },
         rules: {
             custom1: function (input) {
@@ -237,7 +220,7 @@ $(document).ready(function () {
                 var bookAmount = this.get("BookAmount");
                 var bookTotal = this.get("BookPrice") * this.get("BookAmount");
                 var id = dataSource.total() + 1;
-                console.log(bookDeliveredDate);
+                console.log(bookBoughtDate);
                 dataSource.fetch(function () {
                     var dataItem = dataSource.insert(0,
                         {
@@ -269,7 +252,7 @@ $(document).ready(function () {
     $("#book_grid").kendoGrid({
         dataSource: dataSource,
         height: 550,
-        toolbar: "<input type='search' id='search' class='k-i-search'/>",
+        toolbar: "<input type='search' name='search' id='search' placeholder='我想要找....'/>",
         pageable: true,
         //groupable: true,
         //sortable: true,
@@ -301,7 +284,9 @@ $(document).ready(function () {
             }, {
                 field: "BookDeliveredDate",
                 title: "送達狀態",
+                format: "{0: yyyy-MM-dd}",
                 template: kendo.template($("#BookDeliveredDate-template").html())
+                
             }, {
                 field: "BookPrice",
                 title: "金額",
@@ -333,6 +318,26 @@ $(document).ready(function () {
             data.splice(e.newIndex, 0, item);
             localStorage.setItem("bookData", JSON.stringify(array)); //set the updated data in the local storage
         }
+    });
+
+    //搜尋引擎
+    $("#search").on('input', function (e) {
+        var grid = $('#book_grid').data('kendoGrid');
+        var columns = grid.columns;
+        var filter = { logic: 'or', filters: [] };
+        columns.forEach(function (x) {
+            if (x.field) {
+                var type = grid.dataSource.options.schema.model.fields[x.field].type;
+                if (type == 'string') {
+                    filter.filters.push({
+                        field: x.field,
+                        operator: 'contains',
+                        value: e.target.value
+                    })
+                }
+            }
+        });
+        grid.dataSource.filter(filter);
     });
     
 

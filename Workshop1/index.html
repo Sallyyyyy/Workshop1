@@ -11,7 +11,6 @@
     <link rel="stylesheet" href="./css/style.css">
     <link rel="stylesheet" href="./css/fontawesome.css">
     <title>圖書館</title>
-
 </head>
 
 <body>
@@ -20,10 +19,18 @@
             <h1 class="navbar-title text-center">圖書管理系統</h1>
         </nav>
         <script src="data/book-data.js"></script>
-
+        <style>
+            #search {
+                background-color: #003377;
+                padding: 13px;
+                width: 20%;
+                border: 0px;
+                color: white;
+            }
+        </style>
     </header>
     <main>
-        
+
         <div id="DeleteDetail">
         </div>
         <div class="uk-container align-center">
@@ -52,12 +59,12 @@
                         </li>
                         <li>
                             <label class="required">購買日期</label>
-                            <input id="bought_datepicker" name="bought_datepicker" data-bind="value: BookBoughtDate" style="width:100%" required />
+                            <input type="date" id="bought_datepicker" name="bought_datepicker" data-bind="value: BookBoughtDate" style="width:100%" required />
                             <span class="k-invalid-msg" data-for="bought_datepicker">123</span>
                         </li>
                         <li>
                             <label>送達日期</label>
-                            <input id="delivered_datepicker" name="delivered_datepicker" data-bind="value: BookDeliveredDate" style="width:100%" />
+                            <input type="date" id="delivered_datepicker" name="delivered_datepicker" data-bind="value: BookDeliveredDate" style="width:100%" />
                         </li>
                         <li>
                             <label class="required">金額</label>
@@ -71,7 +78,7 @@
                         </li>
                         <li style="text-align:right;">
                             <span>
-                                總計&nbsp;<span data-format="{0:n0}"  name="book_total" id="book_total">0</span> 元
+                                總計&nbsp;<span data-format="{0:n0}" name="book_total" id="book_total">0</span> 元
                             </span>
                         </li>
 
@@ -79,7 +86,7 @@
                 </form>
                 <div style="text-align:right;"><button type="button" data-bind="click: display" class="k-button k-primary btn-add-book" id="insert">新增</button></div>
             </div>
-            <button type="button" id="add_book" class="k-button k-primary btn-add-book" >新增書籍</button>
+            <button type="button" id="add_book" class="k-button k-primary btn-add-book">新增書籍</button>
             <div id="book_grid">
             </div>
         </div>
@@ -87,16 +94,19 @@
     <footer></footer>
     <script id="BookDeliveredDate-template" type="text/x-kendo-template">
         #if(BookDeliveredDate != null){#
-        <span title=#:BookDeliveredDate# class="fas fa-truck"></span>
+        
+        <span id="truck" title='#:BookDeliveredDate#' class="fas fa-truck"></span>
+
         #}else{#
 
         #}#
 
 
     </script>
+
     <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-    
+
     <script type="text/javascript" src="data/book-data.js"></script>
     <script src="./js/jquery-2.1.4.min.js"></script>
     <script src="./js/kendo.all.min.js"></script>
